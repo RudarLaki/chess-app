@@ -11,6 +11,7 @@ function App() {
 
   return (
     <div>
+      <div>english</div>
       {/* Dropdown Menu */}
       <div className="dropdown-menu">
         <button className="drop-button">
