@@ -5,6 +5,7 @@ import Timer from "./components/Timer";
 import "./timer.css";
 import "./history.css";
 import "./file.css";
+import "./board.css";
 
 function App() {
   const [moveHistory, setMoveHistory] = useState([]);

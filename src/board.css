@@ -1,0 +1,93 @@
+/* General Body */
+body {
+  background-color: rgb(62, 62, 67);
+  margin: 0;
+  font-family: Arial, sans-serif;
+  color: #fff;
+}
+
+/* Chess Layout Container */
+.chess-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 30px;
+}
+
+/* Board Styling */
+.board-style {
+  display: grid;
+  grid-template-columns: repeat(8, 60px);
+  grid-template-rows: repeat(8, 60px);
+  width: 480px;
+  height: 480px;
+  border: 2px solid #000;
+}
+
+/* Tiles */
+.tile {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 60px;
+  height: 60px;
+  position: relative;
+}
+
+.tile.light {
+  background-color: #f0d9b5;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.tile.dark {
+  background-color: #946742;
+  width: 60px;
+  height: 60px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.selected-tile {
+  background-color: rgba(255, 215, 0, 0.3);
+}
+
+/* Piece Wrapper */
+.piece-wrapper {
+  width: 80%;
+  height: 80%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.tile .piece:hover {
+  transform: scale(1.1);
+  transition: transform 0.3s ease;
+  cursor: pointer;
+}
+
+/* Move Highlighting */
+.highlight-dot {
+  width: 20px;
+  height: 20px;
+  background-color: rgba(99, 99, 99, 0.6);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+}
+
+.highlight-ring {
+  width: 48px;
+  height: 48px;
+  border: 3px solid rgba(100, 100, 100, 0.6);
+  border-radius: 50%;
+  position: absolute;
+  z-index: 1;
+}

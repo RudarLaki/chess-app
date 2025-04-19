@@ -58,14 +58,6 @@ function Tile({ index, piece, onClick, selectedTile, isHighlighted }) {
     <div
       onClick={() => onClick(index)}
       className={`tile ${isLight ? "light" : "dark"}`}
-      style={{
-        width: "60px",
-        height: "60px",
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "center",
-        position: "relative",
-      }}
     >
       {/* highlight overlays */}
       {isHighlighted &&
