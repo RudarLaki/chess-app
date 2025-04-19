@@ -1,11 +1,13 @@
 import { useState } from "react";
 import ChessBoard from "./components/ChessBoard";
 import MoveHistory from "./components/MoveHistory";
+import Timer from "./components/Timer";
+import "./timer.css";
+import "./history.css";
+import "./file.css";
 
 function App() {
   const [moveHistory, setMoveHistory] = useState([]);
-
-  // Split moves into white and black
   const whiteMoves = moveHistory.filter((_, i) => i % 2 === 0);
   const blackMoves = moveHistory.filter((_, i) => i % 2 === 1);
 
@@ -24,14 +26,10 @@ function App() {
         </div>
       </div>
 
-      {/* Chessboard and Move History side-by-side */}
+      {/* Main Layout: Move History - Board - Timers */}
       <div className="chess-container">
-        <div className="board-style">
-          <ChessBoard setMoveHistory={setMoveHistory} />
-        </div>
-
+        {/* Move History on the left */}
         <div className="move-history-container">
-          {/* White Moves */}
           <div className="history-column">
             <div className="move-history-header white">White Moves</div>
             {whiteMoves.map((move, index) => (
@@ -41,7 +39,6 @@ function App() {
             ))}
           </div>
 
-          {/* Black Moves */}
           <div className="history-column">
             <div className="move-history-header black">Black Moves</div>
             {blackMoves.map((move, index) => (
@@ -50,6 +47,17 @@ function App() {
               </div>
             ))}
           </div>
+        </div>
+
+        {/* Chessboard in the middle */}
+        <div className="board-style">
+          <ChessBoard setMoveHistory={setMoveHistory} />
+        </div>
+
+        {/* Timers stacked vertically on the right */}
+        <div className="timer-stack">
+          <Timer />
+          <Timer />
         </div>
       </div>
     </div>

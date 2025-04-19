@@ -64,8 +64,8 @@ function ChessBoard({ setMoveHistory }) {
   };
 
   const handlePromotion = (move, transition) => {
-    const destinationRank = Math.floor(move.destinationCordinate / 8);
-    const movedPiece = move.movedPiece;
+    const destinationRank = Math.floor(move.getDestinationCordinate() / 8);
+    const movedPiece = move.getMovedPiece();
     const isWhitePromotion =
       movedPiece.pieceAlliance == Alliance.WHITE && destinationRank === 0;
     const isBlackPromotion =
@@ -73,8 +73,8 @@ function ChessBoard({ setMoveHistory }) {
 
     if (movedPiece instanceof Pawn && (isWhitePromotion || isBlackPromotion)) {
       const promotedQueen = new Queen(
-        move.destinationCordinate,
-        movedPiece.pieceAlliance
+        move.getDestinationCordinate(),
+        movedPiece.getPieceAlliance()
       );
       const builder = new Board.Builder();
 
@@ -83,7 +83,9 @@ function ChessBoard({ setMoveHistory }) {
       });
 
       builder.setPiece(promotedQueen);
-      builder.setNextMoveMaker(gameBoard.currentPlayer.opponent.pieceAlliance);
+      builder.setNextMoveMaker(
+        gameBoard.getCurrentPlayer().getOpponent().getPieceAlliance()
+      );
       return builder.build();
     }
 

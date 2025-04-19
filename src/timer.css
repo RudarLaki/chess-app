@@ -1,0 +1,21 @@
+.timer {
+  display: flex;
+  flex-direction: column;
+  width: 100px;
+  border: 5px solid;
+  border: #000;
+  border-radius: 20px;
+  background-color: #051226;
+  align-items: center;
+  padding: 30px;
+}
+.display {
+  font-size: 20px;
+}
+
+.timer-stack {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 480px; /* match board height */
+}
