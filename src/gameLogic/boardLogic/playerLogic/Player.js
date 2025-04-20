@@ -48,7 +48,12 @@ export default class Player {
   }
 
   isMoveLegal(move) {
-    return this.legalMoves.includes(move);
+    return this.legalMoves.find(
+      (move1) =>
+        move1.getMovedPiece().getPiecePosition() ==
+          move.getMovedPiece().getPiecePosition() &&
+        move1.getDestinationCordinate() == move.getDestinationCordinate()
+    );
   }
 
   isCheck() {
@@ -90,7 +95,7 @@ export default class Player {
   }
 
   makeMove(move) {
-    if (!this.isMoveLegal(move)) {
+    if (move == undefined || move == null || !this.isMoveLegal(move)) {
       return new MoveTransition(this.board, move, MoveStatus.ILLEGAL_MOVE);
     }
 

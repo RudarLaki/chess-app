@@ -35,12 +35,19 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
           const castleMoves = gameBoard.getCurrentPlayer().getCastleMoves();
           legalMoves = [...legalMoves, ...castleMoves];
         }
-        const moveDestinations = legalMoves.map(
-          (move) => move.destinationCordinate
-        );
+        const moveDestinations = legalMoves
+          .map((move) => {
+            const transition = gameBoard.getCurrentPlayer().makeMove(move);
+            return transition.getMoveStatus() == MoveStatus.DONE
+              ? move.destinationCordinate
+              : null;
+          })
+          .filter(Boolean); // Remove null values
         setHighlightedMoves(moveDestinations); // ✅ Highlight possible destinations
       }
     } else {
+      setSelectedTile(null);
+      setHighlightedMoves([]);
       const prepMove = MoveFactory.createMove(
         gameBoard,
         selectedTile,
@@ -57,9 +64,6 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
         setGameBoard(newBoard);
         updateBoardFromGame(newBoard);
       }
-
-      setSelectedTile(null);
-      setHighlightedMoves([]); // ✅ Clear highlights
     }
   };
 

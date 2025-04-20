@@ -1,10 +1,9 @@
 /* Move History */
 .move-history-container {
-  margin-left: 10px;
   display: flex;
   justify-content: space-between;
   gap: 5px;
-  background: #2d2d2d;
+  background: #000000;
   padding: 10px;
   border-radius: 10px;
 }
@@ -17,6 +16,7 @@
 }
 
 .move-history-header {
+  border: 2px solid;
   padding: 6px;
   text-align: center;
   font-size: 18px;
@@ -27,13 +27,15 @@
 
 /* White Header */
 .move-history-header.white {
+  border-color: #000000;
   background-color: #f0f0f0;
-  color: #333;
+  color: #000000;
 }
 
 /* Black Header */
 .move-history-header.black {
-  background-color: #333;
+  border-color: #ffffff;
+  background-color: #000000;
   color: #f0f0f0;
 }
 .move-history-row {

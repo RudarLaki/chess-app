@@ -3,12 +3,13 @@ import "../settingsPanel.css";
 export default function SettingsPanel({ onStart }) {
   const [minutes, setMinutes] = useState(5);
   const [increment, setIncrement] = useState(3);
-  function handleSubmit() {
+  const handleSubmit = (e) => {
+    e.preventDefault(); // This is correct
     onStart({
       minutes: Number(minutes),
       increment: Number(increment),
     });
-  }
+  };
   return (
     <div className="settings-panel">
       <form onSubmit={handleSubmit}>
