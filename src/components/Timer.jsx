@@ -1,19 +1,26 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../timer.css";
 
-export default function Timer({ isRunning, initialTime = 300 }) {
+export default function Timer({ isRunning, initialTime = 300, increment = 5 }) {
   const [timeLeft, setTimeLeft] = useState(initialTime); // Time in seconds
   const intervalRef = useRef(null);
+  const lastRunningState = useRef(isRunning);
 
   useEffect(() => {
+    // Add increment only when transitioning from running to stopped
+    if (lastRunningState.current && !isRunning) {
+      setTimeLeft((prev) => prev + increment);
+    }
+    lastRunningState.current = isRunning;
+
     if (isRunning) {
       intervalRef.current = setInterval(() => {
-        setTimeLeft((prevTime) => {
-          if (prevTime <= 0) {
+        setTimeLeft((prev) => {
+          if (prev <= 0) {
             clearInterval(intervalRef.current);
             return 0;
           }
-          return prevTime - 1;
+          return prev - 1;
         });
       }, 1000);
     } else {
@@ -21,7 +28,7 @@ export default function Timer({ isRunning, initialTime = 300 }) {
     }
 
     return () => clearInterval(intervalRef.current);
-  }, [isRunning]);
+  }, [isRunning, increment]);
 
   const formatTime = () => {
     const hours = Math.floor(timeLeft / 3600);

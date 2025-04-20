@@ -2,6 +2,7 @@ import { useState } from "react";
 import ChessBoard from "./components/ChessBoard";
 import MoveHistory from "./components/MoveHistory";
 import Timer from "./components/Timer";
+import SettingsPanel from "./components/SettingsPanel";
 import "./timer.css";
 import "./history.css";
 import "./file.css";
@@ -13,6 +14,12 @@ function App() {
   const blackMoves = moveHistory.filter((_, i) => i % 2 === 1);
   const [isRunningWhite, setIsRunningWhite] = useState(true);
   const [isRunningBlack, setIsRunningBlack] = useState(false);
+
+  const [gameSettings, setGameSettings] = useState(null);
+
+  if (!gameSettings) {
+    return <SettingsPanel onStart={setGameSettings} />;
+  }
 
   return (
     <div>
@@ -63,8 +70,16 @@ function App() {
 
         {/* Timers stacked vertically on the right */}
         <div className="timer-stack">
-          <Timer isRunning={isRunningBlack} />
-          <Timer isRunning={isRunningWhite} />
+          <Timer
+            isRunning={isRunningBlack}
+            initialTime={gameSettings.minutes * 60}
+            increment={gameSettings.increment}
+          />
+          <Timer
+            isRunning={isRunningWhite}
+            initialTime={gameSettings.minutes * 60}
+            increment={gameSettings.increment}
+          />
         </div>
       </div>
     </div>
