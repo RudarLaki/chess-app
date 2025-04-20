@@ -13,6 +13,7 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
   const [boardState, setBoardState] = useState(new Array(64).fill(null));
   const [gameBoard, setGameBoard] = useState(null);
   const [highlightedMoves, setHighlightedMoves] = useState([]);
+  const [kingInCheck, setKingInCheck] = useState(null);
   //const [moveIndex, setMoveIndex] = useState(-1); // ✅ Track current move position
 
   useEffect(() => {
@@ -53,20 +54,22 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
         selectedTile,
         tileIndex
       );
-
       const transition = gameBoard.getCurrentPlayer().makeMove(prepMove);
-
       if (transition.getMoveStatus() == MoveStatus.DONE) {
         const newBoard = handlePromotion(prepMove, transition);
         setMoveHistory((prevHistory) => [...prevHistory, prepMove]);
         setIsRunningBlack(newBoard.getCurrentPlayer().getAlliance() == "Black");
         setIsRunningWhite(newBoard.getCurrentPlayer().getAlliance() == "White");
+        if (newBoard.getCurrentPlayer().isCheck())
+          setKingInCheck(
+            newBoard.getCurrentPlayer().getKing().getPiecePosition()
+          );
+        else setKingInCheck(null);
         setGameBoard(newBoard);
         updateBoardFromGame(newBoard);
       }
     }
   };
-
   const handlePromotion = (move, transition) => {
     const destinationRank = Math.floor(move.getDestinationCordinate() / 8);
     const movedPiece = move.getMovedPiece();
@@ -92,10 +95,8 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
       );
       return builder.build();
     }
-
     return transition.getBoard();
   };
-
   const updateBoardFromGame = (gameBoard) => {
     const newBoard = new Array(64).fill(null);
     [...gameBoard.getWhitePieces(), ...gameBoard.getBlackPieces()].forEach(
@@ -105,7 +106,6 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
     );
     setBoardState(newBoard);
   };
-
   return boardState.map((piece, index) => (
     <Tile
       key={index}
@@ -113,9 +113,9 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
       piece={piece}
       selectedTile={selectedTile}
       onClick={handleTileClick}
+      isKingInCheck={kingInCheck}
       isHighlighted={highlightedMoves.includes(index)}
     />
   ));
 }
-
 export default ChessBoard;

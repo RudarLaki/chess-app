@@ -57,9 +57,12 @@ export default class Player {
   }
 
   isCheck() {
-    return this.opponentsMoves.some(
-      (move) => move.getDestinationCordinate() === this.king.getPiecePosition()
-    );
+    let check = false;
+    this.opponentsMoves.forEach((move) => {
+      if (move.getDestinationCordinate() == this.king.getPiecePosition())
+        check = true;
+    });
+    return check;
   }
 
   getLegalMoves() {

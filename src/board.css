@@ -55,8 +55,16 @@ body {
   position: relative;
 }
 
-.selected-tile {
-  background-color: rgba(255, 215, 0, 0.3);
+/* Selected tile */
+.tile.selected {
+  background-color: rgba(31, 29, 29, 0.3) !important; /* Dark overlay */
+  box-shadow: inset 0 0 10px rgba(254, 219, 66, 0.5);
+}
+
+/* King in check */
+.tile.checked {
+  background-color: rgba(255, 0, 0, 0.3) !important;
+  animation: pulse-check 1s infinite alternate;
 }
 
 /* Piece Wrapper */

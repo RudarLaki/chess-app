@@ -64,27 +64,29 @@ export default class BlackPlayer extends Player {
   }
 
   getQueenCastleMove() {
-    if (
-      this.board.getTile(0).isTileOccupied() &&
-      this.board.getTile(0).getPiece() instanceof Rook &&
-      this.board.getTile(0).getPiece().isFirstMove()
-    ) {
+    if (this.king.isFirstMove() && !this.isCheck()) {
       if (
-        !this.isTileAttacked(2, this.opponentsMoves) &&
-        !this.isTileAttacked(3, this.opponentsMoves) &&
-        !this.board.getTile(1).isTileOccupied() &&
-        !this.board.getTile(2).isTileOccupied() &&
-        !this.board.getTile(3).isTileOccupied()
+        this.board.getTile(0).isTileOccupied() &&
+        this.board.getTile(0).getPiece() instanceof Rook &&
+        this.board.getTile(0).getPiece().isFirstMove()
       ) {
-        return new QueenCastleMove(
-          this.board,
-          this.king,
-          2,
-          this.board.getTile(0).getPiece(),
-          3
-        );
+        if (
+          !this.isTileAttacked(2, this.opponentsMoves) &&
+          !this.isTileAttacked(3, this.opponentsMoves) &&
+          !this.board.getTile(1).isTileOccupied() &&
+          !this.board.getTile(2).isTileOccupied() &&
+          !this.board.getTile(3).isTileOccupied()
+        ) {
+          return new QueenCastleMove(
+            this.board,
+            this.king,
+            2,
+            this.board.getTile(0).getPiece(),
+            3
+          );
+        }
       }
+      return null;
     }
-    return null;
   }
 }

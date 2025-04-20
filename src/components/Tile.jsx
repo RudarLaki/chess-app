@@ -11,6 +11,7 @@ import WQ from "../assets/WQ.png";
 import BQ from "../assets/BQ.png";
 import WK from "../assets/WK.png";
 import BK from "../assets/BK.png";
+import King from "../gameLogic/pieceLogic/King";
 
 const pieceImages = {
   White: {
@@ -31,8 +32,17 @@ const pieceImages = {
   },
 };
 
-function Tile({ index, piece, onClick, selectedTile, isHighlighted }) {
+export default function Tile({
+  index,
+  piece,
+  onClick,
+  selectedTile,
+  isKingInCheck,
+  isHighlighted,
+}) {
   const isLight = (Math.floor(index / 8) + (index % 8)) % 2 === 0;
+  const isSelected = selectedTile === index;
+  const isCheckedKing = isKingInCheck != null && piece instanceof King;
 
   const renderPiece = (piece) => {
     if (!piece) return null;
@@ -57,24 +67,19 @@ function Tile({ index, piece, onClick, selectedTile, isHighlighted }) {
   return (
     <div
       onClick={() => onClick(index)}
-      className={`tile ${isLight ? "light" : "dark"}`}
+      className={`tile ${isLight ? "light" : "dark"} ${
+        isSelected ? "selected" : ""
+      } ${isCheckedKing && index == isKingInCheck ? "checked" : ""}`}
     >
-      {/* highlight overlays */}
+      {/* Highlight overlays */}
       {isHighlighted &&
         (piece ? (
           <div className="highlight-ring" />
         ) : (
           <div className="highlight-dot" />
         ))}
-      {selectedTile == index ? (
-        <div className="selected-tile" />
-      ) : (
-        <div className="" />
-      )}
 
       {renderPiece(piece)}
     </div>
   );
 }
-
-export default Tile;
