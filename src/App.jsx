@@ -11,6 +11,8 @@ function App() {
   const [moveHistory, setMoveHistory] = useState([]);
   const whiteMoves = moveHistory.filter((_, i) => i % 2 === 0);
   const blackMoves = moveHistory.filter((_, i) => i % 2 === 1);
+  const [isRunningWhite, setIsRunningWhite] = useState(true);
+  const [isRunningBlack, setIsRunningBlack] = useState(false);
 
   return (
     <div>
@@ -52,13 +54,17 @@ function App() {
 
         {/* Chessboard in the middle */}
         <div className="board-style">
-          <ChessBoard setMoveHistory={setMoveHistory} />
+          <ChessBoard
+            setMoveHistory={setMoveHistory}
+            setIsRunningBlack={setIsRunningBlack}
+            setIsRunningWhite={setIsRunningWhite}
+          />
         </div>
 
         {/* Timers stacked vertically on the right */}
         <div className="timer-stack">
-          <Timer />
-          <Timer />
+          <Timer isRunning={isRunningBlack} />
+          <Timer isRunning={isRunningWhite} />
         </div>
       </div>
     </div>

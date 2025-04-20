@@ -8,7 +8,7 @@ import { MoveFactory } from "../gameLogic/boardLogic/moveLogic/Move";
 import Queen from "../gameLogic/pieceLogic/Queen";
 import King from "../gameLogic/pieceLogic/King";
 
-function ChessBoard({ setMoveHistory }) {
+function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
   const [selectedTile, setSelectedTile] = useState(null);
   const [boardState, setBoardState] = useState(new Array(64).fill(null));
   const [gameBoard, setGameBoard] = useState(null);
@@ -51,9 +51,9 @@ function ChessBoard({ setMoveHistory }) {
 
       if (transition.getMoveStatus() == MoveStatus.DONE) {
         const newBoard = handlePromotion(prepMove, transition);
-
         setMoveHistory((prevHistory) => [...prevHistory, prepMove]);
-
+        setIsRunningBlack(newBoard.getCurrentPlayer().getAlliance() == "Black");
+        setIsRunningWhite(newBoard.getCurrentPlayer().getAlliance() == "White");
         setGameBoard(newBoard);
         updateBoardFromGame(newBoard);
       }
