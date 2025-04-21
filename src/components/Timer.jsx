@@ -11,6 +11,7 @@ export default function Timer({
   const [timeLeft, setTimeLeft] = useState(initialTime);
   const intervalRef = useRef(null);
   const lastRunningState = useRef(isRunning);
+  const opponentAlliance = clockAlliance == "White" ? "Black" : "White";
 
   useEffect(() => {
     if (lastRunningState.current && !isRunning) {
@@ -32,9 +33,9 @@ export default function Timer({
   // 💡 Only call setGameOver when timeLeft hits 0
   useEffect(() => {
     if (timeLeft === 0) {
-      setGameOver({ alliance: clockAlliance, finished: true });
+      setGameOver({ alliance: opponentAlliance, finished: true });
     }
-  }, [timeLeft, setGameOver, clockAlliance]);
+  }, [timeLeft, setGameOver, opponentAlliance]);
 
   const formatTime = () => {
     const hours = Math.floor(timeLeft / 3600);

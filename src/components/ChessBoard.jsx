@@ -96,6 +96,8 @@ function ChessBoard({
         setGameBoard(newBoard);
         updateBoardFromGame(newBoard);
         if (newBoard.getCurrentPlayer().isCheckMate()) {
+          setIsRunningBlack(false);
+          setIsRunningWhite(false);
           setGameOver({
             finished: false,
             checkMate: true,
