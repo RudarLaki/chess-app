@@ -29,7 +29,11 @@ export default class Pawn extends Piece {
   }
 
   movePiece(move) {
-    return new Pawn(move.destinationCordinate, this.pieceAlliance, false);
+    return new Pawn(
+      move.getDestinationCordinate(),
+      this.getPieceAlliance(),
+      false
+    );
   }
 
   calculateLegalMoves(board) {
@@ -54,25 +58,25 @@ export default class Pawn extends Piece {
           legalMoves.push(
             new PawnPromotionMove(
               baseMove,
-              new Queen(candidateDestination, this.pieceAlliance)
+              new Queen(candidateDestination, this.pieceAlliance, false)
             )
           );
           legalMoves.push(
             new PawnPromotionMove(
               baseMove,
-              new Rook(candidateDestination, this.pieceAlliance)
+              new Rook(candidateDestination, this.pieceAlliance, false)
             )
           );
           legalMoves.push(
             new PawnPromotionMove(
               baseMove,
-              new Bishop(candidateDestination, this.pieceAlliance)
+              new Bishop(candidateDestination, this.pieceAlliance, false)
             )
           );
           legalMoves.push(
             new PawnPromotionMove(
               baseMove,
-              new Knight(candidateDestination, this.pieceAlliance)
+              new Knight(candidateDestination, this.pieceAlliance, false)
             )
           );
         } else {

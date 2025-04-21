@@ -1,5 +1,6 @@
 import Board from "../Board";
 import Rook from "../../pieceLogic/Rook";
+import Queen from "../../pieceLogic/Queen";
 
 const niz = ["a", "b", "c", "d", "e", "f", "g", "h"];
 export class Move {
@@ -171,6 +172,7 @@ export class PawnMove extends MajorMove {
 export class PawnAttackMove extends AttackMove {
   constructor(board, movedPiece, destinationCordinate, attackedPiece) {
     super(board, movedPiece, destinationCordinate, attackedPiece);
+    this.string = "";
   }
   toString() {
     return (
@@ -207,16 +209,17 @@ export class PawnEnPassantAttackMove extends PawnAttackMove {
       this.board.getCurrentPlayer().getOpponent().getAlliance()
     );
     builder.setEnPassant(null);
-
-    return builder.build();
-  }
-  toString() {
-    return (
+    const newBoard = builder.build();
+    this.string =
       niz[this.movedPiece.getPiecePosition()] +
       "x" +
       niz[this.destinationCordinate % 8] +
-      (8 - Math.floor(this.destinationCordinate / 8))
-    );
+      (8 - Math.floor(this.destinationCordinate / 8));
+    if (newBoard.getCurrentPlayer().isCheck()) this.string = this.string + "+";
+    return newBoard;
+  }
+  toString() {
+    return this.string;
   }
 }
 
@@ -243,13 +246,15 @@ export class PawnJump extends MajorMove {
       this.board.getCurrentPlayer().getOpponent().getAlliance()
     );
 
-    return builder.build();
+    const newBoard = builder.build();
+    this.string =
+      niz[this.destinationCordinate % 8] +
+      (8 - Math.floor(this.destinationCordinate / 8));
+    if (newBoard.getCurrentPlayer().isCheck()) this.string = this.string + "+";
+    return newBoard;
   }
   toString() {
-    return (
-      niz[this.destinationCordinate % 8] +
-      (8 - Math.floor(this.destinationCordinate / 8))
-    );
+    return this.string;
   }
 }
 
@@ -349,6 +354,7 @@ export class PawnPromotionMove extends Move {
     super(move.board, move.movedPiece, move.destinationCordinate);
     this.move = move;
     this.promotingTo = promotingTo;
+    this.string = "";
   }
 
   executeMove() {
@@ -373,18 +379,25 @@ export class PawnPromotionMove extends Move {
         builder.setPiece(piece);
       });
 
-    builder.setPiece(this.promotingTo);
+    builder.setPiece(pawn);
     builder.setNextMoveMaker(original.getCurrentPlayer().getAlliance());
-    return builder.build();
+    const newBoard = builder.build();
+    this.string = this.move.toString() + "=Q";
+    if (newBoard.getCurrentPlayer().isCheck()) this.string = this.string + "+";
+    return newBoard;
   }
 
   undo() {
     return this.move.undo();
   }
+  toString() {
+    return this.string;
+  }
 }
+
 export class MoveFactory {
   static createMove(board, source, destination) {
-    const move = board
+    let move = board
       .getCurrentPlayer()
       .getLegalMoves()
       .find(
