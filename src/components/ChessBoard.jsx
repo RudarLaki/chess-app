@@ -68,7 +68,7 @@ function ChessBoard({
               ? move.destinationCordinate
               : null;
           })
-          .filter(Boolean); // Remove null values
+          .filter((destination) => destination !== null); // Remove null values
         setHighlightedMoves(moveDestinations); // ✅ Highlight possible destinations
       }
     } else {
@@ -188,7 +188,7 @@ function ChessBoard({
       setKingInCheck(null);
     }
     setPromotionData({ show: false, cordinate: null, alliance: null });
-    if (newBoard.getCurrentPlayer.isCheckMate())
+    if (newBoard.getCurrentPlayer().isCheckMate())
       setGameOver({
         alliance: newBoard.getCurrentPlayer().getOpponent().getAlliance(),
         checkMate: true,
@@ -212,7 +212,7 @@ function ChessBoard({
 
       {promotionData.show && (
         <PromotionPanel
-          clockAlliance={promotionData.alliance}
+          alliance={promotionData.alliance}
           onSelect={handlePromotionSelection}
         />
       )}

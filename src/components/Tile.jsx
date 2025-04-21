@@ -38,7 +38,7 @@ export default function Tile({
   onClick,
   selectedTile,
   isKingInCheck,
-  isHighlighted,
+  isHighlighted = null,
 }) {
   const isLight = (Math.floor(index / 8) + (index % 8)) % 2 === 0;
   const isSelected = selectedTile === index;
@@ -46,8 +46,7 @@ export default function Tile({
 
   const renderPiece = (piece) => {
     if (!piece) return null;
-
-    const pieceAlliance = piece.pieceAlliance;
+    const pieceAlliance = piece.getPieceAlliance();
     const pieceName = piece.constructor.name;
     const image = pieceImages[pieceAlliance]?.[pieceName];
 
@@ -72,7 +71,7 @@ export default function Tile({
       } ${isCheckedKing && index == isKingInCheck ? "checked" : ""}`}
     >
       {/* Highlight overlays */}
-      {isHighlighted &&
+      {isHighlighted != false &&
         (piece ? (
           <div className="highlight-ring" />
         ) : (
