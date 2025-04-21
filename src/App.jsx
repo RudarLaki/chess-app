@@ -3,6 +3,7 @@ import ChessBoard from "./components/ChessBoard";
 import MoveHistory from "./components/MoveHistory";
 import Timer from "./components/Timer";
 import SettingsPanel from "./components/SettingsPanel";
+import GameOverPanel from "./components/GameOverPanel";
 import "./timer.css";
 import "./history.css";
 import "./file.css";
@@ -14,6 +15,11 @@ function App() {
   const blackMoves = moveHistory.filter((_, i) => i % 2 === 1);
   const [isRunningWhite, setIsRunningWhite] = useState(true);
   const [isRunningBlack, setIsRunningBlack] = useState(false);
+  const [gameOver, setGameOver] = useState({
+    finished: false,
+    checkMate: false,
+    alliance: null,
+  });
 
   const [gameSettings, setGameSettings] = useState(null);
 
@@ -65,23 +71,34 @@ function App() {
             setMoveHistory={setMoveHistory}
             setIsRunningBlack={setIsRunningBlack}
             setIsRunningWhite={setIsRunningWhite}
+            setGameOver={setGameOver}
           />
         </div>
 
         {/* Timers stacked vertically on the right */}
         <div className="timer-stack">
           <Timer
+            clockAliance={"Black"}
             isRunning={isRunningBlack}
             initialTime={gameSettings.minutes * 60}
             increment={gameSettings.increment}
+            setGameOver={setGameOver}
           />
           <Timer
+            clockAlliance={"White"}
             isRunning={isRunningWhite}
             initialTime={gameSettings.minutes * 60}
             increment={gameSettings.increment}
+            setGameOver={setGameOver}
           />
         </div>
       </div>
+      {(gameOver.finished || gameOver.checkMate) && (
+        <GameOverPanel
+          alliance={gameOver.alliance}
+          checkMate={gameOver.checkMate}
+        />
+      )}
     </div>
   );
 }

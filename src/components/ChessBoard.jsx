@@ -1,8 +1,6 @@
 import { useState, useEffect } from "react";
-import Tile from "./Tile";
-import Pawn from "../gameLogic/pieceLogic/Pawn";
-import { Alliance } from "../gameLogic/boardLogic/Alliance";
 import { MoveStatus } from "../gameLogic/boardLogic/moveLogic/MoveStatus";
+import Tile from "./Tile";
 import Board from "../gameLogic/boardLogic/Board";
 import {
   MoveFactory,
@@ -14,8 +12,14 @@ import Bishop from "../gameLogic/pieceLogic/Bishop";
 import Queen from "../gameLogic/pieceLogic/Queen";
 import King from "../gameLogic/pieceLogic/King";
 import PromotionPanel from "./PromotionPanel";
+import { Alliance } from "../gameLogic/boardLogic/Alliance";
 
-function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
+function ChessBoard({
+  setMoveHistory,
+  setIsRunningWhite,
+  setIsRunningBlack,
+  setGameOver,
+}) {
   const [selectedTile, setSelectedTile] = useState(null);
   const [boardState, setBoardState] = useState(new Array(64).fill(null));
   const [gameBoard, setGameBoard] = useState(null);
@@ -91,6 +95,13 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
         else setKingInCheck(null);
         setGameBoard(newBoard);
         updateBoardFromGame(newBoard);
+        if (newBoard.getCurrentPlayer().isCheckMate()) {
+          setGameOver({
+            finished: false,
+            checkMate: true,
+            alliance: gameBoard.getCurrentPlayer().getAlliance().toString(),
+          });
+        }
       }
     }
   };
@@ -177,6 +188,11 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
       setKingInCheck(null);
     }
     setPromotionData({ show: false, cordinate: null, alliance: null });
+    if (newBoard.getCurrentPlayer.isCheckMate())
+      setGameOver({
+        alliance: newBoard.getCurrentPlayer().getOpponent().getAlliance(),
+        checkMate: true,
+      });
   };
 
   // Modify your return statement to include PromotionPanel
@@ -196,7 +212,7 @@ function ChessBoard({ setMoveHistory, setIsRunningWhite, setIsRunningBlack }) {
 
       {promotionData.show && (
         <PromotionPanel
-          alliance={promotionData.alliance}
+          clockAlliance={promotionData.alliance}
           onSelect={handlePromotionSelection}
         />
       )}
