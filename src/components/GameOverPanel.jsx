@@ -1,4 +1,4 @@
-import "../gameOverPanel.css";
+import "../styling/gameOverPanel.css";
 
 export default function GameOverPanel({ alliance, checkMate }) {
   return (

@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import "../timer.css";
+import "../styling/timer.css";
 
 export default function Timer({
   clockAlliance,

@@ -1,15 +1,24 @@
-import { useState } from "react";
+import { io } from "socket.io-client";
+
 import ChessBoard from "./components/ChessBoard";
 import MoveHistory from "./components/MoveHistory";
 import Timer from "./components/Timer";
 import SettingsPanel from "./components/SettingsPanel";
 import GameOverPanel from "./components/GameOverPanel";
-import "./timer.css";
-import "./history.css";
-import "./file.css";
-import "./board.css";
+import "./styling/timer.css";
+import "./styling/history.css";
+import "./styling/file.css";
+import "./styling/board.css";
+import { useEffect, useState } from "react";
 
 function App() {
+  const socket = io("http//localhost:3001");
+  useEffect(() =>
+    socket.on("connect", () => {
+      console.log("connected to 3001");
+    })
+  );
+
   const [moveHistory, setMoveHistory] = useState([]);
   const whiteMoves = moveHistory.filter((_, i) => i % 2 === 0);
   const blackMoves = moveHistory.filter((_, i) => i % 2 === 1);

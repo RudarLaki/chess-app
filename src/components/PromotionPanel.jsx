@@ -10,7 +10,7 @@ import WQ from "../assets/WQ.png";
 import BQ from "../assets/BQ.png";
 import WK from "../assets/WK.png";
 import BK from "../assets/BK.png";
-import "../promotionPanel.css";
+import "../styling/promotionPanel.css";
 
 const pieceImages = {
   White: {

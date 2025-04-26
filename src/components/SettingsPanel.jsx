@@ -1,5 +1,5 @@
 import { useState } from "react";
-import "../settingsPanel.css";
+import "../styling/settingsPanel.css";
 export default function SettingsPanel({ onStart }) {
   const [minutes, setMinutes] = useState(5);
   const [increment, setIncrement] = useState(3);
