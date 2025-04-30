@@ -1,6 +1,6 @@
 import { useState } from "react";
 import "../styling/settingsPanel.css";
-export default function SettingsPanel({ onStart }) {
+export default function SettingsPanel({ roomId, onStart }) {
   const [minutes, setMinutes] = useState(5);
   const [increment, setIncrement] = useState(3);
   const handleSubmit = (e) => {
@@ -31,7 +31,12 @@ export default function SettingsPanel({ onStart }) {
             onChange={(e) => setIncrement(e.target.value)}
           />
         </label>
-        <button type="submit">Start Game</button>
+        <label className="room-id">Room ID: {roomId}</label>
+        <div className="button-allign">
+          <button className="button" type="submit">
+            Start Game
+          </button>
+        </div>
       </form>
     </div>
   );

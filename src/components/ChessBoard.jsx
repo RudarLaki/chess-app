@@ -12,9 +12,10 @@ import Bishop from "../gameLogic/pieceLogic/Bishop";
 import Queen from "../gameLogic/pieceLogic/Queen";
 import King from "../gameLogic/pieceLogic/King";
 import PromotionPanel from "./PromotionPanel";
-import { Alliance } from "../gameLogic/boardLogic/Alliance";
 
 function ChessBoard({
+  roomId,
+  socket,
   setMoveHistory,
   setIsRunningWhite,
   setIsRunningBlack,
@@ -30,6 +31,7 @@ function ChessBoard({
     cordinate: null,
     alliance: null,
   });
+
   const updateBoardFromGame = (gameBoard) => {
     const newBoard = new Array(64).fill(null);
     [...gameBoard.getWhitePieces(), ...gameBoard.getBlackPieces()].forEach(
@@ -40,19 +42,33 @@ function ChessBoard({
     setBoardState(newBoard);
   };
 
-  //const [moveIndex, setMoveIndex] = useState(-1); // ✅ Track current move position
   useEffect(() => {
     const initialBoard = Board.createStandardBoard();
     setGameBoard(initialBoard);
     updateBoardFromGame(initialBoard);
   }, []);
 
+  useEffect(() => {
+    if (!socket) return;
+
+    socket.on("Move", (moveData) => {
+      console.log("Move received from opponent:", moveData);
+      applyMoveFromSocket(moveData);
+    });
+
+    return () => {
+      socket.off("Move");
+    };
+  }, [socket, gameBoard]);
+
   const handleTileClick = (tileIndex) => {
+    if (!gameBoard) return;
+
     if (selectedTile == null) {
       const piece = boardState[tileIndex];
       if (
         piece &&
-        piece.pieceAlliance == gameBoard.getCurrentPlayer().getAlliance()
+        piece.pieceAlliance === gameBoard.getCurrentPlayer().getAlliance()
       ) {
         setSelectedTile(tileIndex);
         let legalMoves = piece.calculateLegalMoves(gameBoard);
@@ -61,52 +77,81 @@ function ChessBoard({
           const castleMoves = gameBoard.getCurrentPlayer().getCastleMoves();
           legalMoves = [...legalMoves, ...castleMoves];
         }
+
         const moveDestinations = legalMoves
           .map((move) => {
             const transition = gameBoard.getCurrentPlayer().makeMove(move);
-            return transition.getMoveStatus() == MoveStatus.DONE
+            return transition.getMoveStatus() === MoveStatus.DONE
               ? move.destinationCordinate
               : null;
           })
-          .filter((destination) => destination !== null); // Remove null values
-        setHighlightedMoves(moveDestinations); // ✅ Highlight possible destinations
+          .filter((destination) => destination !== null);
+        setHighlightedMoves(moveDestinations);
       }
     } else {
+      socket.emit("Move", {
+        roomId: roomId, // the room ID you are in
+        moveData: {
+          from: selectedTile,
+          to: tileIndex,
+        },
+      });
+
       setSelectedTile(null);
       setHighlightedMoves([]);
-      const prepMove = MoveFactory.createMove(
-        gameBoard,
-        selectedTile,
-        tileIndex
-      );
-      const transition = gameBoard.getCurrentPlayer().makeMove(prepMove);
-      let newBoard = null;
-      if (transition.getMoveStatus() == MoveStatus.DONE) {
-        if (prepMove instanceof PawnPromotionMove)
-          newBoard = handlePromotion(prepMove, transition);
-        else newBoard = transition.getBoard();
-        setMoveHistory((prevHistory) => [...prevHistory, prepMove]);
-        setIsRunningBlack(newBoard.getCurrentPlayer().getAlliance() == "Black");
-        setIsRunningWhite(newBoard.getCurrentPlayer().getAlliance() == "White");
-        if (newBoard.getCurrentPlayer().isCheck())
-          setKingInCheck(
-            newBoard.getCurrentPlayer().getKing().getPiecePosition()
-          );
-        else setKingInCheck(null);
-        setGameBoard(newBoard);
-        updateBoardFromGame(newBoard);
-        if (newBoard.getCurrentPlayer().isCheckMate()) {
-          setIsRunningBlack(false);
-          setIsRunningWhite(false);
-          setGameOver({
-            finished: false,
-            checkMate: true,
-            alliance: gameBoard.getCurrentPlayer().getAlliance().toString(),
-          });
-        }
+
+      const moveData = {
+        from: selectedTile,
+        to: tileIndex,
+      };
+
+      applyMoveFromSocket(moveData); // Immediately apply your own move
+    }
+  };
+
+  const applyMoveFromSocket = (moveData) => {
+    const { from, to } = moveData;
+    if (!gameBoard) return;
+
+    const move = MoveFactory.createMove(gameBoard, from, to);
+    const transition = gameBoard.getCurrentPlayer().makeMove(move);
+
+    if (transition.getMoveStatus() === MoveStatus.DONE) {
+      let newBoard;
+
+      if (move instanceof PawnPromotionMove) {
+        newBoard = handlePromotion(move, transition);
+      } else {
+        newBoard = transition.getBoard();
+      }
+
+      setMoveHistory((prevHistory) => [...prevHistory, move]);
+      setIsRunningBlack(newBoard.getCurrentPlayer().getAlliance() == "Black");
+      setIsRunningWhite(newBoard.getCurrentPlayer().getAlliance() == "White");
+
+      if (newBoard.getCurrentPlayer().isCheck()) {
+        setKingInCheck(
+          newBoard.getCurrentPlayer().getKing().getPiecePosition()
+        );
+      } else {
+        setKingInCheck(null);
+      }
+
+      setGameBoard(newBoard);
+      updateBoardFromGame(newBoard);
+
+      if (newBoard.getCurrentPlayer().isCheckMate()) {
+        setIsRunningBlack(false);
+        setIsRunningWhite(false);
+        setGameOver({
+          finished: false,
+          checkMate: true,
+          alliance: gameBoard.getCurrentPlayer().getAlliance().toString(),
+        });
       }
     }
   };
+
   const handlePromotion = (move, transition) => {
     const movedPiece = move.getMovedPiece();
     setPromotionData({
@@ -117,7 +162,6 @@ function ChessBoard({
     return transition.getBoard();
   };
 
-  // Handler for when promotion piece is selected
   const handlePromotionSelection = (pieceType) => {
     if (!promotionData.show || promotionData.cordinate == null) return;
 
@@ -161,7 +205,6 @@ function ChessBoard({
 
     const builder = new Board.Builder();
 
-    // Copy all pieces except the pawn being promoted
     gameBoard.getWhitePieces().forEach((piece) => {
       if (piece.getPiecePosition() !== promotedPiece.getPiecePosition()) {
         builder.setPiece(piece);
@@ -178,7 +221,6 @@ function ChessBoard({
 
     const newBoard = builder.build();
 
-    // Update board state and control
     setGameBoard(newBoard);
     updateBoardFromGame(newBoard);
     setIsRunningBlack(newBoard.getCurrentPlayer().getAlliance() === "Black");
@@ -189,15 +231,17 @@ function ChessBoard({
     } else {
       setKingInCheck(null);
     }
+
     setPromotionData({ show: false, cordinate: null, alliance: null });
-    if (newBoard.getCurrentPlayer().isCheckMate())
+
+    if (newBoard.getCurrentPlayer().isCheckMate()) {
       setGameOver({
         alliance: newBoard.getCurrentPlayer().getOpponent().getAlliance(),
         checkMate: true,
       });
+    }
   };
 
-  // Modify your return statement to include PromotionPanel
   return (
     <>
       {boardState.map((piece, index) => (
@@ -221,4 +265,5 @@ function ChessBoard({
     </>
   );
 }
+
 export default ChessBoard;
