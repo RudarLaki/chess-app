@@ -14,7 +14,7 @@ import "./styling/history.css";
 import "./styling/file.css";
 import "./styling/board.css";
 
-const socket = io("http://16.170.40.88:3001"); // ✨ Create socket ONCE globally
+const socket = io("http://localhost:3001"); // ✨ Create socket ONCE globally
 
 function App() {
   return (
@@ -102,7 +102,7 @@ function ChessGame({ socket }) {
 
         <div className="timer-stack">
           <Timer
-            clockAlliance={"Black"}
+            clockAliance={"Black"}
             isRunning={isRunningBlack}
             initialTime={gameSettings.minutes * 60}
             increment={gameSettings.increment}

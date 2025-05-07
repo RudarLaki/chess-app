@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // ✨ CORS must be first
 app.use(
   cors({
-    origin: "http://16.170.40.88:5173", // Your frontend
+    origin: "http://localhost:5173", // Your frontend
     methods: ["GET", "POST"],
   })
 );
@@ -21,7 +21,7 @@ app.use(express.static("public")); // If you have any static files (optional)
 
 const io = new Server(server, {
   cors: {
-    origin: "http://16.170.40.88:5173",
+    origin: "http://localhost:5173",
     methods: ["GET", "POST"],
   },
 });
