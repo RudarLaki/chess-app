@@ -14,7 +14,7 @@ import "./styling/history.css";
 import "./styling/file.css";
 import "./styling/board.css";
 
-const socket = io("http://localhost:3001"); // ✨ Create socket ONCE globally
+const socket = io("http://16.170.40.88:3001"); // ✨ Create socket ONCE globally
 
 function App() {
   return (
