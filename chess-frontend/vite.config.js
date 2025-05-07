@@ -4,7 +4,10 @@ import react from "@vitejs/plugin-react";
 export default defineConfig({
   plugins: [react()],
   server: {
-    host: "0.0.0.0", // 🔥 Required to expose to public IP
+    host: "0.0.0.0",
     port: 5173,
+    hmr: {
+      clientPort: 80, // Important for EC2 access
+    },
   },
 });

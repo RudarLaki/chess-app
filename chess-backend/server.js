@@ -21,7 +21,7 @@ app.use(express.static("public")); // If you have any static files (optional)
 
 const io = new Server(server, {
   cors: {
-    origin: "http://16.170.40.88/",
+    origin: "http://16.170.40.88:5173",
     methods: ["GET", "POST"],
   },
 });
