@@ -11,7 +11,7 @@ const server = http.createServer(app);
 // ✨ CORS must be first
 app.use(
   cors({
-    origin: "http://16.170.40.88/", // Your frontend
+    origin: "http://16.170.40.88:5173", // Your frontend
     methods: ["GET", "POST"],
   })
 );
