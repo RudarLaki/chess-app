@@ -24,7 +24,6 @@ dist-ssr
 *.sw?
 # Ignore unnecessary files
 eslint.config.js
-index.html
 package-lock.json
 node_modules/
 vite.config.js
