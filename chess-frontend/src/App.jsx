@@ -102,7 +102,7 @@ function ChessGame({ socket }) {
 
         <div className="timer-stack">
           <Timer
-            clockAliance={"Black"}
+            clockAlliance={"Black"}
             isRunning={isRunningBlack}
             initialTime={gameSettings.minutes * 60}
             increment={gameSettings.increment}
